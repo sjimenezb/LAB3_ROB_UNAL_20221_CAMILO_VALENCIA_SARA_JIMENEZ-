@@ -32,7 +32,7 @@ end
     Pb = T*Ph;         %Muñeca respecto base
 
 % Theta 1
-    theta1 = atan2(Pb(2),Pb(1))-off(1);
+    theta1 = atan2(Pb(2),-Pb(1));%-off(1);
 
 % Theta 3
     cos3  = (Pb(1)^2 + Pb(2)^2 +(Pb(3)-l(1))^2-l(2)^2 - l(3)^2)/(2*l(2)*l(3));
@@ -55,10 +55,10 @@ if isreal(sin3D)
         theta2U = (atan2(Pb(3)-l(1),sqrt(Pb(1)^2+Pb(2)^2)) + atan2(k2,k1))-off(2); %Codo arriba es suma
 
     % Theta 4
-        Rp = (rotz(theta1))'*T(1:3,1:3);
+        Rp = (rotz(-theta1))'*T(1:3,1:3);
         pitch = atan2(Rp(3,1),Rp(1,1));
-        theta4D = pitch - theta2D - theta3D;
-        theta4U = pitch - theta2U - theta3U;
+        theta4D = (pitch - theta2D - theta3D);
+        theta4U = (pitch - theta2U - theta3U);
 else
    theta2D = NaN;
    theta3D = NaN;
