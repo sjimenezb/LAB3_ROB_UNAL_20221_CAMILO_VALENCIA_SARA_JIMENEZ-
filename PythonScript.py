@@ -28,11 +28,11 @@ from operator import add
 #servi2=rospy.ServiceProxy('/turtle1/teleport_relative', TeleportRelative)
 
 ##Defino cómo variables globales las posiciones iniciales
-X = -132
+X = -232
 Y = 0
-Z = 70
+Z = 147
 #anguloY=0 #aqui se la pose en grados del eje Y
-pitchY = pi#deg2rad(anguloY) 
+pitchY = pi/2#deg2rad(anguloY) 
 modoSelect = 0
 
 q=[0,0,0,0]
@@ -70,40 +70,41 @@ def getkey():
 
 def movArt(q1):
 
-    print("este es: ", q1)
-
-    pasitos=[math.floor((q1[0]+180)*(4096/360))]
+    print("este es q1: ", q1)
+    #q1=q1*(180/pi)
+    pasitos=[math.floor(((q1[0]*(180/pi))+180)*(4096/360)),math.floor(((q1[1]*(180/pi))+180)*(4096/360)),math.floor(((q1[2]*(180/pi))+270)*(4096/360)),math.floor(((q1[3]*(180/pi))+180)*(4096/360))]
     pasos=(pasitos)
     #int(np.sum(q1,[180.0, 180.0, 270.0, 180.0], axis=0 ))#* (4096/360))
-    print(pasos)
+    print("este es pasos: ",pasos)
 
     jointCommand('', 1, 'Goal_Position', pasos[0], 0.05)
-    #jointCommand('', 2, 'Goal_Position', pasos[1], 0.05)
-    #jointCommand('', 3, 'Goal_Position', pasos[2], 0.05)
-    #jointCommand('', 4, 'Goal_Position', pasos[3], 0.05)
-    #print("movimiento exitoso")
+    jointCommand('', 2, 'Goal_Position', pasos[1], 0.05)
+    jointCommand('', 3, 'Goal_Position', pasos[2], 0.05)
+    jointCommand('', 4, 'Goal_Position', pasos[3], 0.05)
+    print("movimiento exitoso")
 
 def ModTt(modoSelect1,tecla2, X1, Y1, Z1, pitchY1):
     print("tu pose actual es: ", X1, Y1 , Z1 , pitchY1)
+    cambio=2
     if modoSelect1 == 0 and tecla2 == 0: ##cuando a=0 es poque 
         print("estás modificando en trax + ")
-        X1=X1+2
+        X1=X1+cambio
         
     elif modoSelect1 == 0 and tecla2 == 1:
         print("estás modificando en trax - ")
-        X1=X1-2
+        X1=X1-cambio
     elif modoSelect1 == 1 and tecla2 == 0:
         print("estás modificando en tray + ")
-        Y1=Y1+2
+        Y1=Y1+cambio
     elif modoSelect1 == 1 and tecla2 == 1:
         print("estás modificando en tray - ")
-        Y1=Y1-2
+        Y1=Y1-cambio
     elif modoSelect1 == 2 and tecla2 == 0:
         print("estás modificando en traz + ")
-        Z1=Z1+2
+        Z1=Z1+cambio
     elif modoSelect1 == 2 and tecla2 == 1:
         print("estás modificando en traz - ")
-        Z1=Z1-2
+        Z1=Z1-cambio
     elif modoSelect1 == 3 and tecla2 == 0:
         print("estás modificando en PitchY + ")
         pitchY1=pitchY1+0.2
@@ -117,7 +118,7 @@ def ModTt(modoSelect1,tecla2, X1, Y1, Z1, pitchY1):
 
 def generarTt(X, Y , Z , pitchY):
     Tt = transl(X,Y,Z)@ troty(pitchY)@ trotz(math.atan2(Y,-X))
-    print(Tt)
+    print("Esto es Tt: ",Tt)
     return(Tt)
     #invkinPxC(Tt)
 
@@ -134,10 +135,11 @@ def invkinPxC(Tttemp):
     #print(off)
 
     #Desacople
-    Ph=np.array([[0,0,-100, 1]]).T
+    #Ph=np.array([[0,0,-100, 1]]).T
     #Pb=np.dot(T,Ph)
-    Pb= T @ Ph
-    print(Pb)
+    Pb = T[0:3,3] + l[3]*T[0:3,2] 
+    #Pb= T @ Ph
+    print("este es pb: ",Pb)
 
 
     #Theta 1
@@ -152,7 +154,7 @@ def invkinPxC(Tttemp):
 
     print(isinstance(sin3D,complex))
     if np.imag(sin3D) == 0 :
-        print("entré")
+        print("entré sin3D es real")
     #Codo Abajo
         theta3D = math.atan2(np.real(sin3D),cos3)-off[2]
     #Codo Arriba
