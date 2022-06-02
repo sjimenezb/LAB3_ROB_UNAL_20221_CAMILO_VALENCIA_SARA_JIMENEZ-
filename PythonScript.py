@@ -2,10 +2,10 @@ import termios, sys, os
 import rospy
 from geometry_msgs.msg import Twist
 
-from turtlesim.srv import TeleportAbsolute, TeleportRelative
+#from turtlesim.srv import TeleportAbsolute, TeleportRelative
 from numpy import pi
 
-import sys #para uar la linea de comandos
+#import sys #para uar la linea de comandos
 TERMIOS = termios
 import time
 from dynamixel_workbench_msgs.srv import DynamixelCommand
@@ -28,11 +28,11 @@ from operator import add
 #servi2=rospy.ServiceProxy('/turtle1/teleport_relative', TeleportRelative)
 
 ##Defino cómo variables globales las posiciones iniciales
-X = -232
+X = -132
 Y = 0
-Z = 147
+Z = 47
 #anguloY=0 #aqui se la pose en grados del eje Y
-pitchY = pi/2#deg2rad(anguloY) 
+pitchY = pi#deg2rad(anguloY) 
 modoSelect = 0
 
 q=[0,0,0,0]
@@ -70,10 +70,11 @@ def getkey():
 
 def movArt(q1):
 
-    print("este es q1: ", q1)
+    print("este es q1 en radianes: ", q1)
     #q1=q1*(180/pi)
-    pasitos=[math.floor(((q1[0]*(180/pi))+180)*(4096/360)),math.floor(((q1[1]*(180/pi))+180)*(4096/360)),math.floor(((q1[2]*(180/pi))+270)*(4096/360)),math.floor(((q1[3]*(180/pi))+180)*(4096/360))]
-    pasos=(pasitos)
+    #pasitos=[math.floor(((q1[0]*(180/pi))+180)*(4096/360)),math.floor(((q1[1]*(180/pi))+180)*(4096/360)),math.floor(((q1[2]*(180/pi))+270)*(4096/360)),math.floor(((q1[3]*(180/pi))+180)*(4096/360))]
+    pasos=[math.floor(((q1[0]*(180/pi))+0)*(4096/360)),math.floor(((q1[1]*(180/pi))+180)*(4096/360)),math.floor(((q1[2]*(180/pi))+270)*(4096/360)),math.floor(((q1[3]*(180/pi))+0)*(4096/360))]
+    #pasos=(pasitos)
     #int(np.sum(q1,[180.0, 180.0, 270.0, 180.0], axis=0 ))#* (4096/360))
     print("este es pasos: ",pasos)
 
@@ -85,11 +86,10 @@ def movArt(q1):
 
 def ModTt(modoSelect1,tecla2, X1, Y1, Z1, pitchY1):
     print("tu pose actual es: ", X1, Y1 , Z1 , pitchY1)
-    cambio=2
-    if modoSelect1 == 0 and tecla2 == 0: ##cuando a=0 es poque 
+    cambio=5
+    if modoSelect1 == 0 and tecla2 == 0: ##cuando a=0 es poque suma, a=1 resta
         print("estás modificando en trax + ")
-        X1=X1+cambio
-        
+        X1=X1+cambio      
     elif modoSelect1 == 0 and tecla2 == 1:
         print("estás modificando en trax - ")
         X1=X1-cambio
@@ -107,10 +107,10 @@ def ModTt(modoSelect1,tecla2, X1, Y1, Z1, pitchY1):
         Z1=Z1-cambio
     elif modoSelect1 == 3 and tecla2 == 0:
         print("estás modificando en PitchY + ")
-        pitchY1=pitchY1+0.2
+        pitchY1=pitchY1+0.1
     elif modoSelect1 == 3 and tecla2 == 1:
         print("estás modificando en PitchY - ")
-        pitchY1=pitchY1-0.2
+        pitchY1=pitchY1-0.1
     
     print("la nueva pose es: ", X1, Y1 , Z1 , pitchY1)
     #generarTt(X1, Y1 , Z1 , pitchY1)#Poner aqui la función de generar el Tt
@@ -128,67 +128,95 @@ def invkinPxC(Tttemp):
 
 
     #function q_inv = invKinPxC(varargin)
-    aa=math.atan(100/32)*pi/180
-    off=[pi,aa,(pi/2)-aa,0]
+    aa=np.arctan(100/32)*pi/180
+    #off=[pi,aa,(pi/2)-aa,0]
+    off=np.array([0,aa,0,0])
     T=Tttemp
-    l=[47,math.sqrt(10000+(32*32)),100,100]
-    #print(off)
-
+    l=np.array([47,math.sqrt(100*100+(32*32)),100,100])
+    print("Esto son offsets:", off)
+    print("Esto son longitudes:", l)
     #Desacople
     #Ph=np.array([[0,0,-100, 1]]).T
     #Pb=np.dot(T,Ph)
-    Pb = T[0:3,3] + l[3]*T[0:3,2] 
+    #Pb = T[0:3,3] + l[3]*T[0:3,2] 
     #Pb= T @ Ph
+    Pb = T-(l[3]*T[0:4,2]).reshape(4,1)
     print("este es pb: ",Pb)
 
 
     #Theta 1
-    theta1 = math.atan2(Pb[1],-Pb[0])
+    ##theta1 = math.atan2(Pb[1],-Pb[0])
+    theta1 = np.arctan2(Pb[1,3],Pb[0,3])
+
+    #Solución mediante análisis geométrico 2R
+    h = Pb[2,3]-l[0]
+    r = np.sqrt(Pb[0,3]**2 + Pb[1,3]**2)
+    #Solución codo abajo:
+    theta3D = np.arccos((r**2+h**2-l[1]**2-l[2]**2)/(2*l[1]*l[2]))
+    theta2D = -(pi/2-off[1]- (np.arctan2(h,r) - np.arctan2(l[2]*np.sin(theta3D),l[1]+l[2]*np.cos(theta3D))))
+    #Solución codo arriba:
+    theta2U = -(pi/2-off[1]- (np.arctan2(h,r) + np.arctan2(l[2]*np.sin(theta3D),l[1]+l[2]*np.cos(theta3D))))
+    theta3U = -theta3D
+    #Solución Theta 4
+    Rp = (rotz(theta1)).T.dot(T[0:3,0:3])
+    pitch = np.arctan2(Rp[2,0],Rp[0,0])
+    theta4D = (pitch - theta2D - theta3D)
+    theta4U = (pitch - theta2U - theta3U)
+
+    if theta4U > (7/6)*np.pi:
+        theta4U = theta4U -2*np.pi
+    if theta4D > (7/6)*np.pi:
+        theta4D = theta4D -2*np.pi
+
+    q_inv = np.empty((1,4))
+    q_inv[:] = np.NaN
+    q_inv = [theta1, theta2U, theta3U, theta4U]
+    return q_inv
 
     #Theta 3
-    cos3  = (Pb[0]*Pb[0] + Pb[1]*Pb[1] +((Pb[2]-l[0])*(Pb[2]-l[0]))-l[1]*l[1]-l[2]*l[2])/(2*l[1]*l[2])
-    print("esto es cos3: ",cos3)
-    sin3D = cmath.sqrt(1-(cos3*cos3))#Codo Abajo es la raíz positiva
-    print("esto es csin3D: ",np.imag(sin3D))
-    sin3U = -cmath.sqrt(1-(cos3*cos3))#Codo Arriba es la raíz negativa
+    #cos3  = (Pb[0]*Pb[0] + Pb[1]*Pb[1] +((Pb[2]-l[0])*(Pb[2]-l[0]))-l[1]*l[1]-l[2]*l[2])/(2*l[1]*l[2])
+    #print("esto es cos3: ",cos3)
+    #sin3D = cmath.sqrt(1-(cos3*cos3))#Codo Abajo es la raíz positiva
+    #print("esto es csin3D: ",np.imag(sin3D))
+    #sin3U = -cmath.sqrt(1-(cos3*cos3))#Codo Arriba es la raíz negativa
 
-    print(isinstance(sin3D,complex))
-    if np.imag(sin3D) == 0 :
-        print("entré sin3D es real")
-    #Codo Abajo
-        theta3D = math.atan2(np.real(sin3D),cos3)-off[2]
-    #Codo Arriba
-        theta3U = math.atan2(np.real(sin3U),cos3)-off[2]
-
-    #Theta 2
-        k1 = l[1]+l[2]*cos3
-        k2 = l[2]*np.real(sin3D)
-    #Codo Abajo
-        theta2D = (math.atan2(Pb[2]-l[0],math.sqrt(Pb[0]*Pb[0]+Pb[1]*Pb[1])) - math.atan2(k2,k1))-off[1]#; %Codo abajo es resta
-    #Codo Arriba
-        theta2U = (math.atan2(Pb[2]-l[0],math.sqrt(Pb[0]*Pb[0]+Pb[1]*Pb[1])) + math.atan2(k2,k1))-off[1]#; %Codo arriba es suma
-        #print(np.array(rotz(-theta1)).T)
-        #print(T[0:3,0:3])
-    #Theta 4
-        Rp = np.array(rotz(-theta1)).T @ T[0:3,0:3]
-        pitch = math.atan2(Rp[2][0],Rp[0][0])
-        theta4D = (pitch - theta2D - theta3D)
-        theta4U = (pitch - theta2U - theta3U)
-    else :
-        theta2D = float(nan)
-        theta3D = float(nan)
-        theta4D = float(nan)
-        theta2U = float(nan)
-        theta3U = float(nan)
-        theta4U = float(nan)
-
-    q_invd=[0,0,0,0]
-    q_invu=[0,0,0,0]
-    q_invd = [theta1,theta2D,theta3D, theta4D]
-    q_invu = [theta1,theta2U,theta3U, theta4U]
+    #print(isinstance(sin3D,complex))
+    #if np.imag(sin3D) == 0 :
+    #    print("entré sin3D es real")
+    ##Codo Abajo
+    #    theta3D = math.atan2(np.real(sin3D),cos3)-off[2]
+    ##Codo Arriba
+    #    theta3U = math.atan2(np.real(sin3U),cos3)-off[2]
+    #
+    ##Theta 2
+    #    k1 = l[1]+l[2]*cos3
+    #    k2 = l[2]*np.real(sin3D)
+    ##Codo Abajo
+    #    theta2D = (math.atan2(Pb[2]-l[0],math.sqrt(Pb[0]*Pb[0]+Pb[1]*Pb[1])) - math.atan2(k2,k1))-off[1]#; %Codo abajo es resta
+    ##Codo Arriba
+    #    theta2U = (math.atan2(Pb[2]-l[0],math.sqrt(Pb[0]*Pb[0]+Pb[1]*Pb[1])) + math.atan2(k2,k1))-off[1]#; %Codo arriba es suma
+    #    #print(np.array(rotz(-theta1)).T)
+    #    #print(T[0:3,0:3])
+    ##Theta 4
+    #    Rp = np.array(rotz(-theta1)).T @ T[0:3,0:3]
+    #    pitch = math.atan2(Rp[2][0],Rp[0][0])
+    #    theta4D = (pitch - theta2D - theta3D)
+    #    theta4U = (pitch - theta2U - theta3U)
+    #else :
+    #    theta2D = float(nan)
+    #    theta3D = float(nan)
+    #    theta4D = float(nan)
+    #    theta2U = float(nan)
+    #    theta3U = float(nan)
+    #    theta4U = float(nan)
+    #
+    #q_invd=[0,0,0,0]
+    #q_invu=[0,0,0,0]
+    #q_invd = [theta1,theta2D,theta3D, theta4D]
+    #q_invu = [theta1,theta2U,theta3U, theta4U]
     
-    print(q_invu)
-    return  q_invu
+    #print(q_invu)
+    #return  q_invu
 
 
 
