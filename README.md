@@ -12,34 +12,9 @@ En este repositorio se pueden encontrar los códigos para el desarrollo del labo
 
 ### Obtención del modelo mediante método de desacopple de muñeca y geométrico
 
- 
-![Modelo](https://user-images.githubusercontent.com/55710287/168397177-2eed1805-2caf-475f-b450-df4d8117a0ef.png)
+ Para obtener las ecuaciones necesarias en el control del robot mediante cinemática inversa se hizo uso del método de desacople de muñeca junto al análisis geométrico de un mecanismo tipo 2R que se obtenía a partir de las articulaciones 2, 3 y 4, tal como se vió en las clases pasadas con el fin de llegar a una expresión para θ1, θ2 y θ3; siendo θ4 obtenido mediante un análisis de rotación de las matrices herramienta y base
 
-
-### Diagama y parámetros DH
-
-
-| j  | a<sub>i</sub> | α<sub>i</sub>  | d<sub>i</sub> | θ<sub>i</sub>| Offset |
-|----|---------------|----------------|---------------|--------------|--------|
-| 1  | 0             | -π/2           | 47            | q<sub>1</sub>|   π    |
-| 2  | 105.95        |    0           | 0             | q<sub>2</sub>| 1.5986π|
-| 3  | 100           |    0           | 0             | q<sub>3</sub>| 0.4014π|
-| 4  | 100           |    0           | 0             | q<sub>4</sub>|   0    |
-
-
-Sin embargo para nuestro análisis decidimos trabajar con una postura de Home distinta, cuyo modelo DH y tabla de parámetros son los siguientes:
-
-![DHHome](https://user-images.githubusercontent.com/55710287/168397356-89bdb070-9af9-451f-a3cb-817231a646c1.png)
-
-| j  | a<sub>i</sub> | α<sub>i</sub>  | d<sub>i</sub> | θ<sub>i</sub>| Offset |
-|----|---------------|----------------|---------------|--------------|--------|
-| 1  | 0             | -π/2           | 47            | q<sub>1</sub>|   π    |
-| 2  | 105.95        |    0           | 0             | q<sub>2</sub>|-0.4014π|
-| 3  | 100           |    0           | 0             | q<sub>3</sub>|-0.0986π|
-| 4  | 100           |    0           | 0             | q<sub>4</sub>|   0    |
-    
-
-
+> inserte foto del mecanismo 2R
 
 ## Sección 2: Matlab + Toolbox
 #### Materiales:
@@ -51,20 +26,50 @@ Los materiales para esta sección del trabajo son:
     - HUB
 - Computador
     - Ubuntu 20.04
-    - Ros noetic
-    - Dynamixel 
+    - Matlab R2020b con mensajes Dynamixel 
+    - Toolbox de robótica de Peter Corke V9.1o
 
+### Espacio de trabajo
+El espacio de trabajo fue esbozado mediante un sencillo script de Matlab graficando miles de puntos alcanzables por el robot.
 
+>inserte foto del espacio de trabajo
+### Métodos para hallar la cinemática inversa en el ToolBox
+En el toolbox sde Peter Corke hay un total de 5 funciones asociadas al objeto SerialLink para obtener la cineática inversa de un robot, cada una con sus particularidades:
+- .ikine6s: cinemática inversa para un robot de 6 DOF con mmuñeca esférica
+- .ikine:  cinemática inversa mediante métodos numéricos
+- .ikunc: cinemática inversa mediante toolbox de optimización
+- .ikcon: cinemática inversa mediante toolbox de optimización con límites de articulaciones
+- .ikine: cinemática inversa analítica obtenida mediante elementos sybólicos
+### Preguntas de análisis
+- En el caso del Phantom X, el GDL restante es el cuarto ángulo, y este corresponde a una orientación de pitch, es decir, una orientación alrededor del eje Y o Open del efector final.
+- Como se vió en las ecuaciones, dado que el seno de θ3 corresponde a una raíz, esto implica que existen 2 posibles soluciones: una configuración llamada codo arriba y otra codo abajo.
+- El espacio diestro de un robot es aquel espacio donde puede llegar a cualquier posición con una orientación arbitraria, es decir, con múltiples oprientaciones/ángulos llega al mismo punto del espacio cartesiano
+### Aplicación Pick and Place: Metodología y Resultados
+Para esta sección del taller, se busca mediante un script de Matlab generar una serie de trayectorias que el robot PhantomX siga y con ello realice una secuencia pick and place de aros en un objetivo.
+Como base tomamos el script compartido en el repositorio de la clase 6 el cual será nuestro script principal ( `PXinvKine.m` ). Este lo modificamos para adaptarse al modelo del phantom nuevo desarrollado en laboratorios anteriores, implementamos nuestras ecuaciones de cinemática inversa y definimos todas las poses necesarias para el diseño de las trayectorias.
 
-### Metodología y Resultados
+> inserte foto de la prueba de las ecuaciones
 
-Explicación del programa
+En la sección de código mostrada se ve como deifnimos una pose concreta a partir de unas coordenadas cartesianas y una orientiación como giro alrededor del eje Y u Open en notación NOA de la herramienta. Una vex definida se realiza el cálculo correspondiente de los ángulos θ1 a θ4 en las dos configuraciones posibles y se grafica una de ellas:
 
+> inserte foto del robot en Matlab
 
+Tras comprobar que el modelo que se comporta de manera adecuada procedemos a definir todas las posturas que necesitamos en la secuencia pick and place:
 
+> inserte foto de las poses
+
+Y sus trayectorias mediante la función `ctraj()` del Toolbox:
+
+>inserte Foto de las trayectorias
+
+Finalmente se confirma que la simulación coincida con la trayectoria deseada:
+
+>inserte GIF de las trayectorias
+
+Y se procede a controlar el PhantomX para que complete la aplicación como se ve en el siguiente video empleando las funciones desarroladas en laboratorios anteriores: https://youtu.be/04ysbdnuB_4
 ### Análisis:
 
-Como se puede observar 
+Como se puede observar, el robot Phantom X sigue de forma muy cercana la trayectoria simulada, sin embargo debido a discrepancias en la función `ctraj()` a la hora de calcular ciertos pasos y con ellos los ángulos que resultan en las ecuaciones, no se ve un comportamiento idéntico en el video, sin embargo sí nos permite dar una excelente aproximación del comportamiento del robot real siempre y cuando el modelo empleado sea mediananmente preciso. La principal dificultad fue obtener unas poses las cuales tuviesen unas trayectorias alcanzables por el robot real, pues este cuenta con límites de articulaciones no contempladas de forma correcta en MATLAB a pesar de que se especifican, y colisiones consigo mismo, así como lograr unas trayectorias aceoptablemente precisas.
 
 ## Sección 3: ROS - Pick and Place
 ### Materiales
