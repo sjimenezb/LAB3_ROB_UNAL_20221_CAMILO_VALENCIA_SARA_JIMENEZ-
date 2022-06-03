@@ -71,6 +71,7 @@ Y se procede a controlar el PhantomX para que complete la aplicación como se ve
 
 ### Análisis:
 Como se puede observar, el robot Phantom X sigue de forma muy cercana la trayectoria simulada, sin embargo debido a discrepancias en la función `ctraj()` a la hora de calcular ciertos pasos y con ellos los ángulos que resultan en las ecuaciones, no se ve un comportamiento idéntico en el video, sin embargo sí nos permite dar una excelente aproximación del comportamiento del robot real siempre y cuando el modelo empleado sea mediananmente preciso. La principal dificultad fue obtener unas poses las cuales tuviesen unas trayectorias alcanzables por el robot real, pues este cuenta con límites de articulaciones no contempladas de forma correcta en MATLAB a pesar de que se especifican, y colisiones consigo mismo, así como lograr unas trayectorias aceptablemente precisas.
+Adicionalmente se puede observar un movimiento con muchas vibraciones. Esto es debido a que, a pesar de que se definen varias poses interpoladas entre cada punto de ruta, el movimiento entre cada una lo realiza de manera repentina, sin control de torque o velocidad.
 
 ## Sección 3: ROS - Pick and Place
 ### Materiales
