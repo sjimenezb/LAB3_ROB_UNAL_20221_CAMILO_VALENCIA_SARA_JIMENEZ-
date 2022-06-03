@@ -51,7 +51,7 @@ Como base tomamos el script compartido en el repositorio de la clase 6 el cual s
 
 ![invKinTest](https://user-images.githubusercontent.com/55710287/171786702-8761793d-a7f5-45b9-97a5-0e11d9549135.png)
 
-En la sección de código mostrada se ve como deifnimos una pose concreta a partir de unas coordenadas cartesianas y una orientiación como giro alrededor del eje Y u Open en notación NOA de la herramienta. Una vex definida se realiza el cálculo correspondiente de los ángulos θ1 a θ4 en las dos configuraciones posibles y se grafica una de ellas:
+En la sección de código mostrada se ve como deifnimos una pose concreta a partir de unas coordenadas cartesianas y una orientación como giro alrededor del eje Y u Open en notación NOA de la herramienta. Una vez definida se realiza el cálculo correspondiente de los ángulos θ1 a θ4 en las dos configuraciones posibles y se grafica una de ellas:
 
 ![invKinTestRobot](https://user-images.githubusercontent.com/55710287/171786715-43464e96-f8dc-48ff-a60b-40f9a1a7909d.png)
 
