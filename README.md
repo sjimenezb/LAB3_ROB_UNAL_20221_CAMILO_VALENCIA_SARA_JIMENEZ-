@@ -19,15 +19,10 @@ En este repositorio se pueden encontrar los códigos para el desarrollo del labo
 ## Sección 2: Matlab + Toolbox
 #### Materiales:
 Los materiales para esta sección del trabajo son:
-- Robot PhantomX Pincher
-    - 6 motores Dynamixel AX12
-    - Fuente 12V
-    - FTDI
-    - HUB
 - Computador
     - Ubuntu 20.04
     - Matlab R2020b con mensajes Dynamixel 
-    - Toolbox de robótica de Peter Corke V9.1o
+    - Toolbox de robótica de Peter Corke V9.10
 
 ### Espacio de trabajo
 El espacio de trabajo fue esbozado mediante un sencillo script de Matlab graficando miles de puntos alcanzables por el robot.
@@ -45,7 +40,20 @@ En el toolbox sde Peter Corke hay un total de 5 funciones asociadas al objeto Se
 - En el caso del Phantom X, el GDL restante es el cuarto ángulo, y este corresponde a una orientación de pitch, es decir, una orientación alrededor del eje Y o Open del efector final.
 - Como se vió en las ecuaciones, dado que el seno de θ3 corresponde a una raíz, esto implica que existen 2 posibles soluciones: una configuración llamada codo arriba y otra codo abajo.
 - El espacio diestro de un robot es aquel espacio donde puede llegar a cualquier posición con una orientación arbitraria, es decir, con múltiples oprientaciones/ángulos llega al mismo punto del espacio cartesiano
-### Aplicación Pick and Place: Metodología y Resultados
+
+## Sección 3: ROS - Aplicación Pick and Place:
+### Materiales
+Los materiales para esta sección del trabajo son:
+- Robot PhantomX Pincher
+    - 6 motores Dynamixel AX12
+    - Fuente 12V
+    - FTDI
+    - HUB
+- Computador
+    - Ubuntu 20.04
+    - Matlab R2020b con mensajes Dynamixel 
+    - Toolbox de robótica de Peter Corke V9.10 
+### Metodología y Resultados
 Para esta sección del taller, se busca mediante un script de Matlab generar una serie de trayectorias que el robot PhantomX siga y con ello realice una secuencia pick and place de aros en un objetivo.
 Como base tomamos el script compartido en el repositorio de la clase 6 el cual será nuestro script principal ( `PXinvKine.m` ). Este lo modificamos para adaptarse al modelo del phantom nuevo desarrollado en laboratorios anteriores, implementamos nuestras ecuaciones de cinemática inversa y definimos todas las poses necesarias para el diseño de las trayectorias.
 
@@ -72,23 +80,6 @@ Y se procede a controlar el PhantomX para que complete la aplicación como se ve
 ### Análisis:
 Como se puede observar, el robot Phantom X sigue de forma muy cercana la trayectoria simulada, sin embargo debido a discrepancias en la función `ctraj()` a la hora de calcular ciertos pasos y con ellos los ángulos que resultan en las ecuaciones, no se ve un comportamiento idéntico en el video, sin embargo sí nos permite dar una excelente aproximación del comportamiento del robot real siempre y cuando el modelo empleado sea mediananmente preciso. La principal dificultad fue obtener unas poses las cuales tuviesen unas trayectorias alcanzables por el robot real, pues este cuenta con límites de articulaciones no contempladas de forma correcta en MATLAB a pesar de que se especifican, y colisiones consigo mismo, así como lograr unas trayectorias aceptablemente precisas.
 Adicionalmente se puede observar un movimiento con muchas vibraciones. Esto es debido a que, a pesar de que se definen varias poses interpoladas entre cada punto de ruta, el movimiento entre cada una lo realiza de manera repentina, sin control de torque o velocidad.
-
-## Sección 3: ROS - Pick and Place
-### Materiales
-- Robot PhantomX Pincher
-    - 6 motores Dynamixel AX12
-    - Fuente 12V
-    - FTDI
-    - HUB
-- Computador
-    - Ubuntu 20.04
-    - Matlab R2020b 
-### Metodología y Resultados
-
-
-### Análisis:
-
-
 ## Sección 4: ROS - Aplicación de movimiento en el espacio de tarea
 
 ### Materiales
