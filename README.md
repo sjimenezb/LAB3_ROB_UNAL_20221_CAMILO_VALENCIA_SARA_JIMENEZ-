@@ -119,17 +119,21 @@ Finalmente pasamos al main que recibe la información de las teclas presionadas 
 Para finalizar se pueden observar los resultados de nuestro control mediante  script de python, en el siguiente video: 
 https://youtu.be/ncu0eVfDIHw
 
+(Click en la imagen para acceder directamente)
+
+[![incremental](https://img.youtube.com/vi/ncu0eVfDIHw/mqdefault.jpg)](https://youtu.be/ncu0eVfDIHw)
+
 ### Análisis:
 Como se puede observar en el vídeo, Python nos permite generar scripts, lo cual es muy útil a la hora de comunicar por medio de un servicio en ros, además el amplo número de librerías de python permite detectar facilmente las teclas presionadas, realizar operaciones matemáticas y emplear el toolbox de Peter Corke. Respecto a los resultados obtenidos podemos decir que son satisfactorios: Se logró controlar el PhantomX mediante el manejo de comandos dynamixel exitosamente, además por medio de las diferentes funciones se puede navegar entre los tipos de movimiento sin problema para así en cada una variar su posición.
 
 
 
 ## Conclusiones:
-- El terminal es una herramienta extremadamente útil para manejar el sistema de archivos, además de tener ciertas capacidades que no son posibles de alcanzar mediante las alternativas con GUI.
-- Matlab a su vez tiene una gran capacidad para automatizar procesos en ROS como la recolección de datos, control de motores, recibir información del robot y graficarlo, al igual que realizar cálculos complejos, algoritmos de evasión de objetos y mucho más.
-- Es posible obtener en Matlab toda la información que proporciona ROS en el terminal, de una manera más organizada al poder emplear todas las capcidades del software destinadas al manejo de datos.
-- Al manejar nodos en Matlab se debe tener especial cuidado, pues no es posible correr más de una instancia del mismo, al igual que las relaciones de publicador/suscriptor entre ellos.
-- Herramientas cómo Dynamixel wizard permiten controlar motores desde una interfaz gráfica que proporciona la capacidad de prender y apagar los torques al igual que configurar los ángulos del motor evidenciando los pasos requeridos, siendo una herramienta fundamental al momento de recolección de información sobre cada motor en una pose.
+- El terminal es una herramienta extremadamente útil para manejar el sistema de archivos, además de tener ciertas capacidades que no son posibles de alcanzar mediante las alternativas con GUI, como es el lanzamiento de paquetes y scripts de manera rápida.
+- Matlab a su vez tiene una gran capacidad para simular procesos que luego se implementan en ROS, al igual que realizar cálculos complejos y trayectorias como se vió con la aplicación de Pick and Place.
+- Al manejar nodos en Matlab como es el `rosinit` se debe tener especial cuidado, pues no es posible correr más de una instancia del mismo y a veces es necesario reiniciarlo cuando hay pérdidas de conexión.
+- Herramientas cómo Dynamixel wizard permiten controlar motores desde una interfaz gráfica que proporciona la capacidad de prender y apagar los torques al igual que configurar los ángulos del motor evidenciando los pasos requeridos, siendo una herramienta fundamental al momento de recolección de información sobre cada motor en una pose determinada, o comprobar las salidas de un modelo cinmático antes de hacer que el script lo realice de manera autónoma causando colisiones.
+- Además se debe tener mucho cuidado con la sincronía del movimiento de motores y envío de nuevas poses, pues esto puede llevar en muchas ocasiones a una sobreescritura del movimiento y con ello trayectorias erráticas.
 - Python al tener acceso a las librerías de toda la web permite usarlas al momento de controlar robots por medio de ros, aumentando las capacidades de un script. 
 - Un factor muy importante al realizar la sección de Python fue poder emplear funciones del Tool box de Peter Corke que permite facilmente sacar diferentes matrices de rotación, entre otras funciones.
 - Los servicios pueden resultar de gran utilidad para poder manipular parámetros que no serían accesibles de forma directa de otras maneras.

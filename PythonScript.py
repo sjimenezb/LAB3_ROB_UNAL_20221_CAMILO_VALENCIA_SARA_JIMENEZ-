@@ -90,10 +90,10 @@ def ModTt(modoSelect1,tecla2, X1, Y1, Z1, pitchY1):
         print("estás modificando en traz - ")
         Z1=Z1-cambio
     elif modoSelect1 == 3 and tecla2 == 0:
-        print("estás modificando en PitchY + ")
+        print("estás modificando rot + ")
         pitchY1=pitchY1+0.1
     elif modoSelect1 == 3 and tecla2 == 1:
-        print("estás modificando en PitchY - ")
+        print("estás modificando rot - ")
         pitchY1=pitchY1-0.1
     
     print("la nueva pose es: ", X1, Y1 , Z1 , pitchY1)
