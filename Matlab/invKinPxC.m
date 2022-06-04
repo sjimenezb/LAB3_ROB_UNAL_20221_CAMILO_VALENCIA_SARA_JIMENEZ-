@@ -1,7 +1,7 @@
 %{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Cinematica inversa para robot Phantom X nuevo
-Por: Felipe González, modificado por Camilo Valencia
+Por: Felipe González, modificado por Camilo Valencia y Sara Jiménez
 Entradas:
 T: Pose del EF
 l: Longitud de eslabones

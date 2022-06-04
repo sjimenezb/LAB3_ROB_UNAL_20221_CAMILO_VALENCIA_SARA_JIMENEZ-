@@ -97,24 +97,11 @@
 %% Planeación de trayectorias con rutas definidas empleando el sccript adjunto invKinPxC.m
 
 % Checkpoints:
-% Home:      X80  Y100    Z100   troty(180*pi/180)
 % Izquierda: X0    Y-132 Z5:70   troty(pi)
 % Centro:    X-132 Y0    Z5:70   troty(pi)
 % Derecha:   X0    Y132  Z5:70   troty(pi)
 
 % Definición de las rutas
-    % Nuevo Home
-%     X = -32;
-%     Y = 0;
-%     Z = 347;
-%     pitchY = 0;
-
-%     X = 80;
-%     Y = 70;
-%     Z = 100;
-%     pitchY = pi;
-%     Thome = transl(X,Y,Z)*troty(pitchY)*trotz(atan2(Y,-X));
-
     % Centro Arriba
     X = -132;
     Y = 0;
@@ -159,8 +146,7 @@
 
 % Definición de las trayectorias
     steps = 10;
-% Desplazamiento de home al centro superior y al costado izquierdo.
-    %Thcu  = ctraj(Thome,Tcu,steps);
+% Desplazamiento centro superior y al costado izquierdo.
     Tcuiu  = ctraj(Tcu,Tiu,steps);
     Tiuid = ctraj(Tiu,Tid,steps);
     % Cierre gripper agarra pieza 1 a la izquierda
@@ -178,23 +164,12 @@
     Tdddu = ctraj(Tdd,Tdu,steps);
     Tducu = ctraj(Tdu,Tcu,steps);
     Tcucd = ctraj(Tcu,Tcd,steps); %%%%%%%%%%
-    % Abre gripper suelta pieza 2 en el centro
-% Retorno a Home   
+    % Abre gripper suelta pieza 2 en el centro 
     Tcdcu = ctraj(Tcd,Tcu,steps); %%%%%%%%%%
-%	Tcuh  = ctraj(Tcu,Thome,steps);
     pause(1)
 %% Ciclo para calcular y simular el robot
     
     solucion = 2; % 1-> Codo abajo; 2-> Codo arriba
-%     for i=1:steps
-%         qinv = invKinPxC(Thcu(:,:,i),l,off);
-%         PhantomX.plot(qinv(solucion,:),'notiles','noname')
-%         hold on
-%         view(-30,25);
-%         plot3(Thcu(1,4,i),Thcu(2,4,i),Thcu(3,4,i),'ro')
-%         q_inv(i,:) = qinv(solucion,:);
-%     end
-
     for i=1:steps
         qinv = invKinPxC(Tcuiu(:,:,i),l,off);
         PhantomX.plot(qinv(solucion,:),'notiles','noname')  
@@ -281,15 +256,8 @@
         plot3(Tcdcu(1,4,i),Tcdcu(2,4,i),Tcdcu(3,4,i),'ro')
         q_inv(i,:) = qinv(solucion,:);
     end
-% 
-%     for i=1:steps
-%         qinv = invKinPxC(Tcuh(:,:,i),l,off);
-%         PhantomX.plot(qinv(solucion,:),'notiles','noname')  
-%         plot3(Tcuh(1,4,i),Tcuh(2,4,i),Tcuh(3,4,i),'ro')
-%         q_inv(i,:) = qinv(solucion,:);         
-%     end
-
     hold off
+
 %% Comunicación Dynamixel ROS
 rosinit;
 %%
@@ -298,18 +266,7 @@ client = rossvcclient('/dynamixel_workbench/dynamixel_command');
 msg = rosmessage(client);
 %%
 % Realizamos las trayectorias
-% Aseguramos pinza abierta
-%         qinv = invKinPxC(Tcu,l,off);
-%         phantomCom(qinv(solucion,:),client,msg,"abre");
-%         pause(2);
-%         qinv = invKinPxC(Tcd,l,off);
-%         phantomCom(qinv(solucion,:),client,msg,"cierra");
 
-%     for i=1:steps
-%         qinv = invKinPxC(Thcu(:,:,i),l,off);
-%         phantomCom(qinv(solucion,:),client,msg,"abre");
-%     end
-% 
     for i=1:steps
         qinv = invKinPxC(Tcuiu(:,:,i),l,off);
         phantomCom(qinv(solucion,:),client,msg,"abre");
@@ -401,8 +358,3 @@ msg = rosmessage(client);
         phantomCom(qinv(solucion,:),client,msg,"abre");
         pause(0.3);
     end
-
-%     for i=1:steps
-%         qinv = invKinPxC(Tcuh(:,:,i),l,off);
-%         phantomCom(qinv(solucion,:),client,msg,"abre");
-%     end

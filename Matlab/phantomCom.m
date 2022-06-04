@@ -1,17 +1,17 @@
 %{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Comunicación Matlab+dynamixel Phantom X nuevo
-Por: Camilo Valencia
+Por: Camilo Valencia y Sara Jiménez
 Prerequisitos: 
-- Tener el nodo rosinit corriendo
-- Tener el servicio y cliente corriendo
+- Tener el nodo "rosinit" corriendo de Matlab
+- Tener el servicio y cliente corriendo mediante el paquete de Ros "px_controllers.launch" del repo pasado
 Entradas:
 qrad: Ángulos a enviar en radianes
 gripper: "abre" o "cierra"
 motorSvcClient: rossvcclient('/dynamixel_workbench/dynamixel_command');
 motorCommandMsg: rosmessage(motorSvcClient);
 Salidas:
-comm: Estado del llamado
+Ninguna
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %}
 function comm = phantomCom(varargin)
@@ -63,5 +63,4 @@ function comm = phantomCom(varargin)
     motorCommandMsg.Value = posicion(5);%%rango 0-4096
     call(motorSvcClient, motorCommandMsg);
     pause(0.05);
-
 end
