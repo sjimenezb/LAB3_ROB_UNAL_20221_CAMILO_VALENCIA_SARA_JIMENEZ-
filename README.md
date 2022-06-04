@@ -97,17 +97,17 @@ Adicionalmente se puede observar un movimiento con muchas vibraciones. Esto es d
     - Matlab R2020b 
     - Dynamixel Wizard
 ### Metodología y Resultados
-Para finalizar el laboratorio, realizamos el control del robot PhantomX a través de Python empleando mensajes de Dynamixel, funciones de RO y varias librerías para Python incluyendo la de Peter Corke.
+Para finalizar el laboratorio, realizamos el control del robot PhantomX a través de Python empleando mensajes de Dynamixel, funciones de ROS y varias librerías para Python incluyendo la de Peter Corke.
 El script de Python mostrado a continuación `PythonScript.py` contiene todo lo necesario para este punto, además de asegurarse de correr `px_controllers.launch`  para las respectivas comunicaciones con el robot.
 
 Explicación del programa:
 
 Para realizar este programa, iniciamos definiendo los incrementos que se van a realizar según las teclas presionadas, para luego realizar el programa de python que por medio de cinemática inversa según las posiciónes de la herramienta que el usuario indique se calculen las posiciones de cada motor.
 
-Este script tiene el trabajo de navegar entre los tipos de movimiento usando  "w" y "s" y modificando la posición final del efector  "a" y "s". Para esto realizamos las siguientes funciones:
-- ```jointCommand```: Esta función permite crear el servici'deentro del nodo del launch para comunicarse con el robot.
+Este script tiene el trabajo de navegar entre los tipos de movimiento usando  "w" y "s" y modificando la posición final del efector con "a" y "d". Para esto realizamos las siguientes funciones:
+- ```jointCommand```: Esta función permite crear el servicio dentro del nodo del launch para comunicarse con el robot.
 - ```getkey```: Esta función permite detectar la tecla que ha sido presionada en el teclado y la retorna.
-- ```mov Art```: Esta función recibe un arreglo con los valores en radianes con las posiciones deseadas de cada motor y calcula los pasos que se requieren para la posición que deseamos.
+- ```mov Art```: Esta función recibe un arreglo con los valores en radianes de las posiciones deseadas de cada motor y calcula los pasos que se requieren para la posición que deseamos además de comunicarse con el robot mediante el servicio creado.
 - ```ModTt```: Esta función permite tomar los valores actuales de la matriz de transformación Tt y según la tecla presionada por el usuario incrementa o disminuye los movimientos de la herramienta.
 - ```generar Tt```: Esta función es la que  recibe los diferentes valores de posición de la herramienta y con esto genera la matriz Tt.
 - ```invkinPxC```: Esta función recibe la Tt generada por ```generar Tt``` y por medio de cinemática inversa retorna un arreglo con los valores de q para cada una de las articulaciónes, esta función es la misma que usamos en el script de Matlab.
