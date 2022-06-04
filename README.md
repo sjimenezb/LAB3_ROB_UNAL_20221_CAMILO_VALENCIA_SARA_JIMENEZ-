@@ -120,7 +120,7 @@ Para finalizar se pueden observar los resultados de nuestro control mediante  sc
 https://youtu.be/ncu0eVfDIHw
 
 ### Análisis:
-Como se puede observar en el vídeo, Python nos permite generar scripts, lo cual es muy útil a la hora de comunicar por medio de un servicio en ros, además el amplo número de librerías de python permite detectar facilmente las teclas presionadas, realizar operaciones matemáticas y emplear el toolbox de Peter Corke. Respecto a los resultados obtenidos podemos decir que son satisfactorios: Se logró controlar el PhantomX mediante el manejo de comandos dynamixel exitosamente, además por medio de las diferentes funciones se puede navegar entre los tipos de movimiento sin problema para así en cada una variar su posición.
+Cómo se puede observar en el vídeo, Python nos permite generar scripts, lo cual es muy útil a la hora de comunicar por medio de un servicio en ros, además el amplo número de librerías de python permite detectar facilmente las teclas presionadas, realizar operaciones matemáticas y emplear el toolbox de Peter Corke. Respecto a los resultados obtenidos podemos decir que son satisfactorios: Se logró controlar el PhantomX mediante el manejo de comandos dynamixel exitosamente, además por medio de las diferentes funciones se puede navegar entre los tipos de movimiento sin problema para así en cada una variar su posición.
 
 
 
