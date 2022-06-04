@@ -114,7 +114,7 @@ Este script tiene el trabajo de navegar entre los tipos de movimiento usando  "w
     
      Finalmente pasamos al main que recibe la información de las teclas presionadas usando ```getkey``` luego con esta información según la tecla presionada se cambia de tipo de movimiento  ```modoSelect``` con "w" o "s" donde si se llega al rot se presiona s se vuelve al trax y viceversa. Todo esto se encuentra en un loop.
      
-     ![main](https://user-images.githubusercontent.com/82957735/171980544-375216e1-4a07-4e78-8989-f3e17541537f.jpg)
+![main](https://user-images.githubusercontent.com/82957735/171980544-375216e1-4a07-4e78-8989-f3e17541537f.jpg)
 
 Para finalizar se pueden observar los resultados de nuestro control mediante  script de python, en el siguiente video: 
 https://youtu.be/ncu0eVfDIHw
