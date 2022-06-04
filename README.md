@@ -95,10 +95,32 @@ Adicionalmente se puede observar un movimiento con muchas vibraciones. Esto es d
 - Computador
     - Ubuntu 20.04
     - Matlab R2020b 
-    - Dynamixel
+    - Dynamixel Wizard
 ### Metodología y Resultados
+Para finalizar el laboratorio, realizamos el control del robot PhantomX a través de Python empleando mensajes de Dynamixel, funciones de RO y varias librerías para Python incluyendo la de Peter Corke.
+El script de Python mostrado a continuación `PythonScript.py` contiene todo lo necesario para este punto, además de asegurarse de correr `px_controllers.launch`  para las respectivas comunicaciones con el robot.
+
+Explicación del programa:
+
+Para realizar este programa, iniciamos definiendo los incrementos que se van a realizar según las teclas presionadas, para luego realizar el programa de python que por medio de cinemática inversa según las posiciónes de la herramienta que el usuario indique se calculen las posiciones de cada motor.
+
+Este script tiene el trabajo de navegar entre los tipos de movimiento usando  "w" y "s" y modificando la posición final del efector  "a" y "s". Para esto realizamos las siguientes funciones:
+    - ```jointCommand```: Esta función permite crear el servici'deentro del nodo del launch para comunicarse con el robot.
+    - ```getkey```: Esta función permite detectar la tecla que ha sido presionada en el teclado y la retorna.
+    - ```mov Art```: Esta función recibe un arreglo con los valores en radianes con las posiciones deseadas de cada motor y calcula los pasos que se requieren para la posición que deseamos.
+    - ```ModTt```: Esta función permite tomar los valores actuales de la matriz de transformación Tt y según la tecla presionada por el usuario incrementa o disminuye los movimientos de la herramienta.
+    - ```generar Tt```: Esta función es la que  recibe los diferentes valores de posición de la herramienta y con esto genera la matriz Tt.
+    - ```invkinPxC```: Esta función recibe la Tt generada por ```generar Tt``` y por medio de cinemática inversa retorna un arreglo con los valores de q para cada una de las articulaciónes, esta función es la misma que usamos en el script de Matlab.
+    
+Finalmente pasamos al main que recibe la información de las teclas presionadas usando ```getkey``` luego con esta información según la tecla presionada se cambia de tipo de movimiento  ```modoSelect``` con "w" o "s" donde si se llega al rot se presiona s se vuelve al trax y viceversa. Todo esto se encuentra en un loop.
+     
+![main](https://user-images.githubusercontent.com/82957735/171980544-375216e1-4a07-4e78-8989-f3e17541537f.jpg)
+
+Para finalizar se pueden observar los resultados de nuestro control mediante  script de python, en el siguiente video: 
+https://youtu.be/ncu0eVfDIHw
 
 ### Análisis:
+Como se puede observar en el vídeo, Python nos permite generar scripts, lo cual es muy útil a la hora de comunicar por medio de un servicio en ros, además el amplo número de librerías de python permite detectar facilmente las teclas presionadas, realizar operaciones matemáticas y emplear el toolbox de Peter Corke. Respecto a los resultados obtenidos podemos decir que son satisfactorios: Se logró controlar el PhantomX mediante el manejo de comandos dynamixel exitosamente, además por medio de las diferentes funciones se puede navegar entre los tipos de movimiento sin problema para así en cada una variar su posición.
 
 
 
@@ -109,6 +131,7 @@ Adicionalmente se puede observar un movimiento con muchas vibraciones. Esto es d
 - Al manejar nodos en Matlab se debe tener especial cuidado, pues no es posible correr más de una instancia del mismo, al igual que las relaciones de publicador/suscriptor entre ellos.
 - Herramientas cómo Dynamixel wizard permiten controlar motores desde una interfaz gráfica que proporciona la capacidad de prender y apagar los torques al igual que configurar los ángulos del motor evidenciando los pasos requeridos, siendo una herramienta fundamental al momento de recolección de información sobre cada motor en una pose.
 - Python al tener acceso a las librerías de toda la web permite usarlas al momento de controlar robots por medio de ros, aumentando las capacidades de un script. 
+- Un factor muy importante al realizar la sección de Python fue poder emplear funciones del Tool box de Peter Corke que permite facilmente sacar diferentes matrices de rotación, entre otras funciones.
 - Los servicios pueden resultar de gran utilidad para poder manipular parámetros que no serían accesibles de forma directa de otras maneras.
 - Python es una excelente herramienta para manejar la interfaz humano máquina, además de todas las ventajas que nos ofrece este lenguaje como librerías, estructuras de datos, etc.
 - Además permite ejectuar complejas rutinas de manera sencila en un solo comando del terminal con ROS configurado.
